@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token Bucket Algorithm</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class', // Enable dark mode via class
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        // Shadcn-like colors
+                        border: 'hsl(var(--border))',
+                        input: 'hsl(var(--input))',
+                        ring: 'hsl(var(--ring))',
+                        background: 'hsl(var(--background))',
+                        foreground: 'hsl(var(--foreground))',
+                        primary: {
+                            DEFAULT: 'hsl(var(--primary))',
+                            foreground: 'hsl(var(--primary-foreground))',
+                        },
+                        secondary: {
+                            DEFAULT: 'hsl(var(--secondary))',
+                            foreground: 'hsl(var(--secondary-foreground))',
+                        },
+                        destructive: {
+                            DEFAULT: 'hsl(var(--destructive))',
+                            foreground: 'hsl(var(--destructive-foreground))',
+                        },
+                        muted: {
+                            DEFAULT: 'hsl(var(--muted))',
+                            foreground: 'hsl(var(--muted-foreground))',
+                        },
+                        accent: {
+                            DEFAULT: 'hsl(var(--accent))',
+                            foreground: 'hsl(var(--accent-foreground))',
+                        },
+                        popover: {
+                            DEFAULT: 'hsl(var(--popover))',
+                            foreground: 'hsl(var(--popover-foreground))',
+                        },
+                        card: {
+                            DEFAULT: 'hsl(var(--card))',
+                            foreground: 'hsl(var(--card-foreground))',
+                        },
+                    },
+                    keyframes: {
+                        "accordion-down": {
+                            from: { height: "0" },
+                            to: { height: "var(--radix-accordion-content-height)" },
+                        },
+                        "accordion-up": {
+                            from: { height: "var(--radix-accordion-content-height)" },
+                            to: { height: "0" },
+                        },
+                        "token-drop": {
+                            '0%': { transform: 'translateY(-50px) scale(0.5)', opacity: '0' },
+                            '100%': { transform: 'translateY(0) scale(1)', opacity: '1' },
+                        }
+                    },
+                    animation: {
+                        "accordion-down": "accordion-down 0.2s ease-out",
+                        "accordion-up": "accordion-up 0.2s ease-out",
+                        "token-drop": "token-drop 0.3s ease-out forwards",
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        /* Base styles mimicking Shadcn variables */
+        :root {
+            --background: 0 0% 100%;
+            --foreground: 222.2 47.4% 11.2%;
+            --muted: 210 40% 96.1%;
+            --muted-foreground: 215.4 16.3% 46.9%;
+            --popover: 0 0% 100%;
+            --popover-foreground: 222.2 47.4% 11.2%;
+            --card: 0 0% 100%;
+            --card-foreground: 222.2 47.4% 11.2%;
+            --border: 214.3 31.8% 91.4%;
+            --input: 214.3 31.8% 91.4%;
+            --primary: 222.2 47.4% 11.2%;
+            --primary-foreground: 210 40% 98%;
+            --secondary: 210 40% 96.1%;
+            --secondary-foreground: 222.2 47.4% 11.2%;
+            --accent: 210 40% 96.1%;
+            --accent-foreground: 222.2 47.4% 11.2%;
+            --destructive: 0 91% 51%;
+            --destructive-foreground: 210 40% 98%;
+            --ring: 215 16% 47%;
+            --radius: 0.5rem;
+        }
+
+        /* Dark mode variables */
+        .dark {
+            --background: 224 71% 4%;
+            --foreground: 213 31% 91%;
+            --muted: 223 47% 11%;
+            --muted-foreground: 215.4 16.3% 56.9%;
+            --popover: 224 71% 4%;
+            --popover-foreground: 213 31% 91%;
+            --card: 224 71% 4%;
+            --card-foreground: 213 31% 91%;
+            --border: 216 34% 17%;
+            --input: 216 34% 17%;
+            --primary: 210 40% 98%;
+            --primary-foreground: 222.2 47.4% 11.2%;
+            --secondary: 223 47% 11%;
+            --secondary-foreground: 213 31% 91%;
+            --accent: 223 47% 11%;
+            --accent-foreground: 213 31% 91%;
+            --destructive: 0 63% 31%;
+            --destructive-foreground: 210 40% 98%;
+            --ring: 216 34% 17%;
+        }
+
+        /* Custom styles for bucket fill */
+        .tokens-fill-light {
+            background-color: #facc15;
+            /* Tailwind yellow-400 */
+        }
+
+        .dark .tokens-fill-dark {
+            background-color: #14b8a6;
+            /* Tailwind teal-500 */
+        }
+
+        /* Responsive specific styles for the bucket and explanation */
+        @media (min-width: 1024px) {
+
+            /* On desktop (lg breakpoint) */
+            .main-layout {
+                grid-template-columns: 1fr 1fr;
+                /* Two columns */
+            }
+        }
+
+        @media (max-width: 1023px) {
+
+            /* On mobile/tablet (below lg breakpoint) */
+            .main-layout {
+                grid-template-columns: 1fr;
+                /* Single column */
+            }
+        }
+
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: hsl(var(--muted));
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: hsl(var(--muted-foreground));
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: hsl(var(--foreground));
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="font-sans bg-background text-foreground transition-colors duration-200">
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-center w-full">Token Bucket Rate Limiting</h1>
+            <button id="darkModeToggle"
+                class="p-2 rounded-full bg-muted hover:bg-muted-foreground/10 transition-colors">
+                <!-- Moon icon for light mode, Sun icon for dark mode -->
+                <svg id="moonIcon" class="h-6 w-6 text-foreground hidden dark:block" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9 9 0 008.354-5.646z" />
+                </svg>
+                <svg id="sunIcon" class="h-6 w-6 text-foreground block dark:hidden" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 3v1m0 16v1m9-9h1M3 12H2m15.325 3.325l-.707.707M6.364 6.364l-.707-.707m12.728 0l-.707.707M6.364 17.636l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+            </button>
+        </header>
+
+        <div class="grid main-layout gap-8 items-start">
+            <!-- Token Bucket Section -->
+            <div class="bg-card p-6 rounded-lg shadow-lg border border-border flex flex-col items-center">
+                <p class="text-lg font-semibold mb-4">Token Bucket (Capacity: <span id="maxTokensDisplay">5</span>
+                    tokens)</p>
+                <div
+                    class="relative w-48 h-72 border-4 border-primary rounded-b-xl overflow-hidden bg-gradient-to-b from-blue-400 to-blue-600 dark:from-gray-700 dark:to-gray-900 shadow-inner">
+                    <div id="tokens" class="absolute bottom-0 w-full transition-all duration-500 ease-in-out">
+                        <!-- Tokens will be dynamically added/removed here -->
+                    </div>
+                </div>
+                <p class="text-xl font-bold mt-4">Current tokens: <span id="tokenCount">5</span>/<span
+                        id="maxTokensDisplayBottom">5</span></p>
+
+                <div class="flex flex-wrap justify-center gap-4 mt-6 w-full">
+                    <button id="requestBtn"
+                        class="flex-1 min-w-[150px] inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 px-4 py-2 shadow-md"
+                        onclick="makeRequest()">
+                        Make API Request
+                    </button>
+                    <button id="addTokenBtn"
+                        class="flex-1 min-w-[150px] inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-secondary text-secondary-foreground hover:bg-secondary/80 h-10 px-4 py-2 shadow-md"
+                        onclick="addToken()">
+                        Add Token (Manual)
+                    </button>
+                </div>
+
+                <div
+                    class="w-full mt-6 p-4 rounded-lg bg-muted border border-border shadow-sm flex flex-col items-center gap-4">
+                    <div class="flex items-center gap-2">
+                        <label for="refillRate" class="text-sm font-medium text-muted-foreground">Auto-Refill
+                            Rate:</label>
+                        <select id="refillRate" onchange="updateRefillRate()"
+                            class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1">
+                            <option value="0">Disabled</option>
+                            <option value="3000">Slow (1 token/3s)</option>
+                            <option value="2000" selected>Normal (1 token/2s)</option>
+                            <option value="1000">Fast (1 token/1s)</option>
+                            <option value="500">Very Fast (2 tokens/1s)</option>
+                        </select>
+                    </div>
+                    <div id="timerDisplay" class="text-lg font-semibold text-primary">Next token in: 2.0s</div>
+                    <div id="autoStatus" class="px-3 py-1 rounded-full text-xs font-semibold" data-status="on">
+                        Auto-refill: ON</div>
+                </div>
+
+                <div id="status"
+                    class="w-full mt-6 p-4 rounded-lg text-center font-medium bg-secondary text-secondary-foreground border border-border">
+                    Ready to handle requests
+                </div>
+            </div>
+
+            <!-- Explanation Flow Section -->
+            <div class="bg-card p-6 rounded-lg shadow-lg border border-border">
+                <h2 class="text-2xl font-bold mb-6 text-center">How the Token Bucket Algorithm Works</h2>
+                <div class="space-y-6">
+                    <!-- Step 1 -->
+                    <div class="flex items-start gap-4 p-4 bg-muted rounded-lg shadow-sm border border-border">
+                        <div
+                            class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-lg">
+                            1</div>
+                        <div>
+                            <h3 class="font-semibold text-lg mb-1">Initial State & Capacity</h3>
+                            <p class="text-muted-foreground">The **token bucket** starts with a maximum capacity (e.g.,
+                                5 tokens). Think of it like a fixed-size container that can hold a certain number of
+                                tokens. Initially, it's often full.</p>
+                        </div>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="flex items-start gap-4 p-4 bg-muted rounded-lg shadow-sm border border-border">
+                        <div
+                            class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-lg">
+                            2</div>
+                        <div>
+                            <h3 class="font-semibold text-lg mb-1">Token Refill Rate</h3>
+                            <p class="text-muted-foreground">Tokens are **automatically added** to the bucket at a
+                                constant, predefined rate (e.g., 1 token every 2 seconds). This ensures a steady supply
+                                of "permission slips" for requests. The bucket will never exceed its maximum capacity.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="flex items-start gap-4 p-4 bg-muted rounded-lg shadow-sm border border-border">
+                        <div
+                            class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-lg">
+                            3</div>
+                        <div>
+                            <h3 class="font-semibold text-lg mb-1">Request Arrival & Consumption</h3>
+                            <p class="text-muted-foreground">When an **API request arrives**, the system checks if there
+                                are enough tokens in the bucket. Typically, each request consumes one token. If tokens
+                                are available, one is consumed, and the request is processed.</p>
+                        </div>
+                    </div>
+                    <!-- Step 4 -->
+                    <div class="flex items-start gap-4 p-4 bg-muted rounded-lg shadow-sm border border-border">
+                        <div
+                            class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-lg">
+                            4</div>
+                        <div>
+                            <h3 class="font-semibold text-lg mb-1">Handling Bursts (Burst Capacity)</h3>
+                            <p class="text-muted-foreground">The bucket's capacity allows for **bursts of requests**. If
+                                the bucket is full, multiple requests can be served instantly until the tokens are
+                                depleted. This is a key advantage, accommodating sudden spikes in traffic.</p>
+                        </div>
+                    </div>
+                    <!-- Step 5 -->
+                    <div class="flex items-start gap-4 p-4 bg-muted rounded-lg shadow-sm border border-border">
+                        <div
+                            class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-lg">
+                            5</div>
+                        <div>
+                            <h3 class="font-semibold text-lg mb-1">Rate Limiting Excess Requests</h3>
+                            <p class="text-muted-foreground">If a request arrives and the **bucket is empty**, it means
+                                the rate limit has been exceeded. The request is then **denied** (e.g., with a "429 Too
+                                Many Requests" error) until more tokens become available through the refill process.</p>
+                        </div>
+                    </div>
+                    <!-- Step 6 -->
+                    <div class="flex items-start gap-4 p-4 bg-muted rounded-lg shadow-sm border border-border">
+                        <div
+                            class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-lg">
+                            6</div>
+                        <div>
+                            <h3 class="font-semibold text-lg mb-1">Continuous Operation</h3>
+                            <p class="text-muted-foreground">The refill and consumption process is **continuous**.
+                                Tokens are constantly refilling, and requests are constantly consuming them, ensuring
+                                that the API operates within its defined limits while allowing for some flexibility.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let tokens = 5;
+        const maxTokens = 5;
+        let timerInterval = null;
+        let currentRate = 2000; // milliseconds, default to Normal (1 token/2s)
+        let timeLeft = currentRate / 1000; // Initial time left for the next token
+
+        const tokenContainer = document.getElementById('tokens');
+        const tokenCountDisplay = document.getElementById('tokenCount');
+        const maxTokensDisplay = document.getElementById('maxTokensDisplay');
+        const maxTokensDisplayBottom = document.getElementById('maxTokensDisplayBottom');
+        const requestBtn = document.getElementById('requestBtn');
+        const statusDisplay = document.getElementById('status');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const autoStatusDisplay = document.getElementById('autoStatus');
+        const refillRateSelect = document.getElementById('refillRate');
+        const darkModeToggle = document.getElementById('darkModeToggle');
+
+        // Set initial max tokens display
+        maxTokensDisplay.textContent = maxTokens;
+        maxTokensDisplayBottom.textContent = maxTokens;
+        // Set initial refill rate selected option
+        refillRateSelect.value = currentRate;
+
+        // Helper function to create a single token DOM element
+        function createTokenElement(index) {
+            const token = document.createElement('div');
+            token.className = 'absolute w-full h-[50px] flex items-center justify-center text-primary-foreground text-sm font-bold opacity-0 animate-token-drop z-10';
+            token.textContent = 'TOKEN';
+            token.style.bottom = `${index * 50}px`; // Stacks based on pixel height
+            token.classList.add('tokens-fill-light', 'dark:tokens-fill-dark');
+            return token;
+        }
+
+        function updateDisplay() {
+            // Adjust overall fill height for a sleeker, minimal look
+            tokenContainer.style.height = `${tokens * 50}px`; // 50px per token
+
+            tokenCountDisplay.textContent = tokens;
+            requestBtn.disabled = tokens === 0;
+
+            // Update timer display and auto-status based on conditions
+            if (currentRate === 0) {
+                timerDisplay.textContent = 'Auto-refill disabled';
+                autoStatusDisplay.textContent = 'Auto-refill: OFF';
+                autoStatusDisplay.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-gray-500 text-white'; // Gray for off
+            } else if (tokens >= maxTokens) {
+                timerDisplay.textContent = 'Bucket full - paused';
+                // Clear the timer interval when the bucket is full to prevent further countdown/additions
+                if (timerInterval) clearInterval(timerInterval);
+                timerInterval = null; // Ensure it's nullified
+                autoStatusDisplay.textContent = 'Auto-refill: ON (Paused)';
+                autoStatusDisplay.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-blue-500 text-white'; // Blue for paused
+            } else {
+                // If not disabled and not full, ensure timer is running
+                if (!timerInterval) {
+                    startRefillIntervals(); // Restart if it was paused
+                }
+                autoStatusDisplay.textContent = 'Auto-refill: ON';
+                autoStatusDisplay.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-green-500 text-white'; // Green for on
+            }
+        }
+
+        function makeRequest() {
+            if (tokens > 0) {
+                tokens--;
+                // Remove the topmost token element
+                if (tokenContainer.lastChild) {
+                    tokenContainer.lastChild.remove();
+                }
+                statusDisplay.textContent = `✅ Request ALLOWED - Token consumed (${tokens} remaining)`;
+                statusDisplay.className = 'w-full mt-6 p-4 rounded-lg text-center font-medium bg-green-100 text-green-700 border border-green-200';
+            } else {
+                statusDisplay.textContent = '❌ Request DENIED - No tokens available (rate limited!)';
+                statusDisplay.className = 'w-full mt-6 p-4 rounded-lg text-center font-medium bg-red-100 text-red-700 border border-red-200';
+            }
+            updateDisplay();
+            // If refill was paused because bucket was full, restart it if tokens are consumed
+            if (tokens < maxTokens && currentRate > 0 && !timerInterval) {
+                startRefillIntervals();
+            }
+        }
+
+        function addToken() {
+            if (tokens < maxTokens) {
+                // Create and append a new token element at the current 'tokens' count's position
+                const newTokenElement = createTokenElement(tokens);
+                tokenContainer.appendChild(newTokenElement);
+                tokens++; // Increment tokens after adding the visual element
+
+                statusDisplay.textContent = `🔄 Token added - Bucket refilled (${tokens}/${maxTokens})`;
+                statusDisplay.className = 'w-full mt-6 p-4 rounded-lg text-center font-medium bg-blue-100 text-blue-700 border border-blue-200';
+            } else {
+                statusDisplay.textContent = '⚠️ Bucket full - Cannot add more tokens';
+                statusDisplay.className = 'w-full mt-6 p-4 rounded-lg text-center font-medium bg-yellow-100 text-yellow-700 border border-yellow-200';
+            }
+            updateDisplay();
+        }
+
+        function updateTimer() {
+            // Only update timer and add token if currentRate is positive and bucket is not full
+            if (currentRate > 0 && tokens < maxTokens) {
+                timeLeft -= 0.1; // Decrement by 0.1s for smoother countdown
+                if (timeLeft <= 0) {
+                    addToken(); // Add a token when timer hits zero
+                    timeLeft = currentRate / 1000; // Reset timer for the next cycle
+                }
+                timerDisplay.textContent = `Next token in: ${Math.max(0, timeLeft).toFixed(1)}s`;
+            } else {
+                // These cases are handled by updateDisplay's conditional logic,
+                // but the timer text still needs to be set if the interval is running.
+                if (currentRate === 0) {
+                    timerDisplay.textContent = 'Auto-refill disabled';
+                } else if (tokens >= maxTokens) {
+                    timerDisplay.textContent = 'Bucket full - paused';
+                }
+            }
+        }
+
+        function startRefillIntervals() {
+            // Clear any existing timer to avoid multiple intervals running
+            if (timerInterval) clearInterval(timerInterval);
+
+            // If auto-refill is enabled and bucket is not full, start the timer
+            if (currentRate > 0 && tokens < maxTokens) {
+                timeLeft = currentRate / 1000; // Initialize timeLeft with the current rate
+                timerInterval = setInterval(updateTimer, 100); // Update every 100ms for smooth countdown
+            }
+            updateDisplay(); // Important to call to update the autoStatusDisplay
+        }
+
+        function updateRefillRate() {
+            currentRate = parseInt(refillRateSelect.value);
+            startRefillIntervals(); // Restart intervals with the new rate or disable if 0
+            // The previous updateDisplay was here, but it's now called within startRefillIntervals for consistency.
+        }
+
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            // Store preference in local storage
+            if (document.documentElement.classList.contains('dark')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+            }
+            // Tokens' fill color relies on CSS classes, so no need to re-render them explicitly.
+            // However, updateDisplay is called to ensure status/timer text is consistent.
+            updateDisplay();
+        }
+
+        // Initialize theme from local storage or default to light
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+
+        // Event Listeners
+        darkModeToggle.addEventListener('click', toggleDarkMode);
+
+        // Initial setup
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeTheme();
+            // Initial population of tokens (should happen only once on load)
+            for (let i = 0; i < maxTokens; i++) {
+                const token = createTokenElement(i);
+                tokenContainer.appendChild(token);
+            }
+            // Set initial bucket height
+            tokenContainer.style.height = `${tokens * 50}px`;
+
+            updateDisplay(); // Initial display update
+            updateRefillRate(); // This will correctly start or disable the auto-refill based on the default selected rate
+        });
+    </script>
+</body>
+
+</html>
