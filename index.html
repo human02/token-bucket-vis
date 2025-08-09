@@ -15,59 +15,13 @@
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
                     },
-                    colors: {
-                        // Shadcn-like colors
-                        border: 'hsl(var(--border))',
-                        input: 'hsl(var(--input))',
-                        ring: 'hsl(var(--ring))',
-                        background: 'hsl(var(--background))',
-                        foreground: 'hsl(var(--foreground))',
-                        primary: {
-                            DEFAULT: 'hsl(var(--primary))',
-                            foreground: 'hsl(var(--primary-foreground))',
-                        },
-                        secondary: {
-                            DEFAULT: 'hsl(var(--secondary))',
-                            foreground: 'hsl(var(--secondary-foreground))',
-                        },
-                        destructive: {
-                            DEFAULT: 'hsl(var(--destructive))',
-                            foreground: 'hsl(var(--destructive-foreground))',
-                        },
-                        muted: {
-                            DEFAULT: 'hsl(var(--muted))',
-                            foreground: 'hsl(var(--muted-foreground))',
-                        },
-                        accent: {
-                            DEFAULT: 'hsl(var(--accent))',
-                            foreground: 'hsl(var(--accent-foreground))',
-                        },
-                        popover: {
-                            DEFAULT: 'hsl(var(--popover))',
-                            foreground: 'hsl(var(--popover-foreground))',
-                        },
-                        card: {
-                            DEFAULT: 'hsl(var(--card))',
-                            foreground: 'hsl(var(--card-foreground))',
-                        },
-                    },
                     keyframes: {
-                        "accordion-down": {
-                            from: { height: "0" },
-                            to: { height: "var(--radix-accordion-content-height)" },
-                        },
-                        "accordion-up": {
-                            from: { height: "var(--radix-accordion-content-height)" },
-                            to: { height: "0" },
-                        },
                         "token-drop": {
                             '0%': { transform: 'translateY(-50px) scale(0.5)', opacity: '0' },
                             '100%': { transform: 'translateY(0) scale(1)', opacity: '1' },
                         }
                     },
                     animation: {
-                        "accordion-down": "accordion-down 0.2s ease-out",
-                        "accordion-up": "accordion-up 0.2s ease-out",
                         "token-drop": "token-drop 0.3s ease-out forwards",
                     },
                 },
@@ -75,80 +29,55 @@
         }
     </script>
     <style>
-        /* Base styles mimicking Shadcn variables */
-        :root {
-            --background: 0 0% 100%;
-            --foreground: 222.2 47.4% 11.2%;
-            --muted: 210 40% 96.1%;
-            --muted-foreground: 215.4 16.3% 46.9%;
-            --popover: 0 0% 100%;
-            --popover-foreground: 222.2 47.4% 11.2%;
-            --card: 0 0% 100%;
-            --card-foreground: 222.2 47.4% 11.2%;
-            --border: 214.3 31.8% 91.4%;
-            --input: 214.3 31.8% 91.4%;
-            --primary: 222.2 47.4% 11.2%;
-            --primary-foreground: 210 40% 98%;
-            --secondary: 210 40% 96.1%;
-            --secondary-foreground: 222.2 47.4% 11.2%;
-            --accent: 210 40% 96.1%;
-            --accent-foreground: 222.2 47.4% 11.2%;
-            --destructive: 0 91% 51%;
-            --destructive-foreground: 210 40% 98%;
-            --ring: 215 16% 47%;
-            --radius: 0.5rem;
+        /* Base Styles and Modern Design System */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 50%, #f3e8ff 100%);
+            transition: all 0.5s ease;
         }
 
-        /* Dark mode variables */
-        .dark {
-            --background: 224 71% 4%;
-            --foreground: 213 31% 91%;
-            --muted: 223 47% 11%;
-            --muted-foreground: 215.4 16.3% 56.9%;
-            --popover: 224 71% 4%;
-            --popover-foreground: 213 31% 91%;
-            --card: 224 71% 4%;
-            --card-foreground: 213 31% 91%;
-            --border: 216 34% 17%;
-            --input: 216 34% 17%;
-            --primary: 210 40% 98%;
-            --primary-foreground: 222.2 47.4% 11.2%;
-            --secondary: 223 47% 11%;
-            --secondary-foreground: 213 31% 91%;
-            --accent: 223 47% 11%;
-            --accent-foreground: 213 31% 91%;
-            --destructive: 0 63% 31%;
-            --destructive-foreground: 210 40% 98%;
-            --ring: 216 34% 17%;
+        .dark body {
+            background: linear-gradient(135deg, #111827 0%, #1e3a8a 50%, #312e81 100%);
+            color: #f3f4f6;
+        }
+
+        .card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        .dark .card {
+            background: #1f2937;
+            border-color: #374151;
+            color: #f3f4f6;
         }
 
         /* Custom styles for bucket fill */
         .tokens-fill-light {
-            background-color: #facc15;
-            /* Tailwind yellow-400 */
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
         }
 
         .dark .tokens-fill-dark {
-            background-color: #14b8a6;
-            /* Tailwind teal-500 */
+            background: linear-gradient(135deg, #14b8a6, #0d9488);
         }
 
         /* Responsive specific styles for the bucket and explanation */
         @media (min-width: 1024px) {
-
-            /* On desktop (lg breakpoint) */
             .main-layout {
                 grid-template-columns: 1fr 1fr;
-                /* Two columns */
             }
         }
 
         @media (max-width: 1023px) {
-
-            /* On mobile/tablet (below lg breakpoint) */
             .main-layout {
                 grid-template-columns: 1fr;
-                /* Single column */
             }
         }
 
@@ -159,36 +88,262 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: hsl(var(--muted));
+            background: #f3f4f6;
             border-radius: 10px;
+        }
+
+        .dark ::-webkit-scrollbar-track {
+            background: #374151;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: hsl(var(--muted-foreground));
+            background: #9ca3af;
             border-radius: 10px;
         }
 
+        .dark ::-webkit-scrollbar-thumb {
+            background: #6b7280;
+        }
+
         ::-webkit-scrollbar-thumb:hover {
-            background: hsl(var(--foreground));
+            background: #6b7280;
+        }
+
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: translateY(0);
+        }
+
+        .btn:disabled:hover {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            color: white;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #4b5563, #374151);
+        }
+
+        .input,
+        .select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            background: white;
+            color: #111827;
+            transition: all 0.3s ease;
+        }
+
+        .input:focus,
+        .select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .dark .input,
+        .dark .select {
+            background: #374151;
+            border-color: #4b5563;
+            color: #f3f4f6;
+        }
+
+        /* Step Cards */
+        .step-card {
+            padding: 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+            color: #1f2937;
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            border-color: #93c5fd;
+        }
+
+        .dark .step-card {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: rgba(59, 130, 246, 0.4);
+            color: #f3f4f6;
+        }
+
+        .step-card h3 {
+            color: #1f2937;
+        }
+
+        .dark .step-card h3 {
+            color: #f9fafb;
+        }
+
+        .step-card p {
+            color: #4b5563;
+        }
+
+        .dark .step-card p {
+            color: #e5e7eb;
+        }
+
+        .step-number {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.875rem;
+            color: white;
+            margin-right: 0.75rem;
+            flex-shrink: 0;
+            background: #3b82f6;
+        }
+
+        /* Status Messages */
+        .status-message {
+            padding: 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .status-success {
+            background: #dcfce7;
+            border-color: #86efac;
+            color: #166534;
+        }
+
+        .status-error {
+            background: #fee2e2;
+            border-color: #fca5a5;
+            color: #991b1b;
+        }
+
+        .status-info {
+            background: #dbeafe;
+            border-color: #93c5fd;
+            color: #1e40af;
+        }
+
+        .dark .status-success {
+            background: rgba(34, 197, 94, 0.15);
+            border-color: rgba(34, 197, 94, 0.4);
+            color: #86efac;
+        }
+
+        .dark .status-error {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+        }
+
+        .dark .status-info {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: rgba(59, 130, 246, 0.4);
+            color: #93c5fd;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .dark .gradient-text {
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .dark-toggle {
+            padding: 0.75rem;
+            border-radius: 50%;
+            background: white;
+            border: 1px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform: translateY(0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 3rem;
+            height: 3rem;
+        }
+
+        .dark .dark-toggle {
+            background: #1f2937;
+            border-color: #374151;
+        }
+
+        .dark-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .dark-toggle svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            stroke: #4b5563;
+            transition: all 0.3s ease;
+        }
+
+        .dark .dark-toggle svg {
+            stroke: #d1d5db;
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
-<body class="font-sans bg-background text-foreground transition-colors duration-200">
+<body class="font-sans min-h-screen transition-colors duration-200">
     <div class="container mx-auto p-4 md:p-8">
         <header class="flex justify-between items-center mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold text-center w-full">Token Bucket Rate Limiting</h1>
-            <button id="darkModeToggle"
-                class="p-2 rounded-full bg-muted hover:bg-muted-foreground/10 transition-colors">
-                <!-- Moon icon for light mode, Sun icon for dark mode -->
-                <svg id="moonIcon" class="h-6 w-6 text-foreground hidden dark:block" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" stroke-width="2">
+            <h1 class="text-3xl md:text-4xl font-bold text-center w-full gradient-text">Token Bucket Rate Limiting</h1>
+            <button id="darkModeToggle" class="dark-toggle">
+                <svg id="moonIcon" class="hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9 9 0 008.354-5.646z" />
+                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                 </svg>
-                <svg id="sunIcon" class="h-6 w-6 text-foreground block dark:hidden" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" stroke-width="2">
+                <svg id="sunIcon" class="block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M12 3v1m0 16v1m9-9h1M3 12H2m15.325 3.325l-.707.707M6.364 6.364l-.707-.707m12.728 0l-.707.707M6.364 17.636l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
@@ -197,38 +352,36 @@
 
         <div class="grid main-layout gap-8 items-start">
             <!-- Token Bucket Section -->
-            <div class="bg-card p-6 rounded-lg shadow-lg border border-border flex flex-col items-center">
-                <p class="text-lg font-semibold mb-4">Token Bucket (Capacity: <span id="maxTokensDisplay">5</span>
+            <div class="card flex flex-col items-center">
+                <p class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-300">Token Bucket (Capacity: <span
+                        id="maxTokensDisplay">5</span>
                     tokens)</p>
                 <div
-                    class="relative w-48 h-72 border-4 border-primary rounded-b-xl overflow-hidden bg-gradient-to-b from-blue-400 to-blue-600 dark:from-gray-700 dark:to-gray-900 shadow-inner">
+                    class="relative w-48 h-72 border-4 border-gray-600 dark:border-gray-400 rounded-b-xl overflow-hidden bg-gradient-to-b from-blue-400 to-blue-600 dark:from-gray-700 dark:to-gray-900 shadow-inner">
                     <div id="tokens" class="absolute bottom-0 w-full transition-all duration-500 ease-in-out">
                         <!-- Tokens will be dynamically added/removed here -->
                     </div>
                 </div>
-                <p class="text-xl font-bold mt-4">Current tokens: <span id="tokenCount">5</span>/<span
-                        id="maxTokensDisplayBottom">5</span></p>
+                <p class="text-xl font-bold mt-4 text-gray-800 dark:text-gray-300">Current tokens: <span
+                        id="tokenCount">5</span>/<span id="maxTokensDisplayBottom">5</span></p>
 
                 <div class="flex flex-wrap justify-center gap-4 mt-6 w-full">
-                    <button id="requestBtn"
-                        class="flex-1 min-w-[150px] inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 px-4 py-2 shadow-md"
+                    <button id="requestBtn" class="btn btn-primary flex-1 min-w-[150px] shadow-md"
                         onclick="makeRequest()">
                         Make API Request
                     </button>
-                    <button id="addTokenBtn"
-                        class="flex-1 min-w-[150px] inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-secondary text-secondary-foreground hover:bg-secondary/80 h-10 px-4 py-2 shadow-md"
+                    <button id="addTokenBtn" class="btn btn-secondary flex-1 min-w-[150px] shadow-md"
                         onclick="addToken()">
                         Add Token (Manual)
                     </button>
                 </div>
 
                 <div
-                    class="w-full mt-6 p-4 rounded-lg bg-muted border border-border shadow-sm flex flex-col items-center gap-4">
+                    class="w-full mt-6 p-4 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col items-center gap-4">
                     <div class="flex items-center gap-2">
-                        <label for="refillRate" class="text-sm font-medium text-muted-foreground">Auto-Refill
+                        <label for="refillRate" class="text-sm font-medium text-gray-600 dark:text-gray-400">Auto-Refill
                             Rate:</label>
-                        <select id="refillRate" onchange="updateRefillRate()"
-                            class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1">
+                        <select id="refillRate" onchange="updateRefillRate()" class="select">
                             <option value="0">Disabled</option>
                             <option value="3000">Slow (1 token/3s)</option>
                             <option value="2000" selected>Normal (1 token/2s)</option>
@@ -236,92 +389,99 @@
                             <option value="500">Very Fast (2 tokens/1s)</option>
                         </select>
                     </div>
-                    <div id="timerDisplay" class="text-lg font-semibold text-primary">Next token in: 2.0s</div>
+                    <div id="timerDisplay" class="text-lg font-semibold text-blue-600 dark:text-blue-400">Next token in:
+                        2.0s</div>
                     <div id="autoStatus" class="px-3 py-1 rounded-full text-xs font-semibold" data-status="on">
                         Auto-refill: ON</div>
                 </div>
 
-                <div id="status"
-                    class="w-full mt-6 p-4 rounded-lg text-center font-medium bg-secondary text-secondary-foreground border border-border">
+                <div id="status" class="status-message status-info w-full mt-6">
                     Ready to handle requests
                 </div>
             </div>
 
             <!-- Explanation Flow Section -->
-            <div class="bg-card p-6 rounded-lg shadow-lg border border-border">
-                <h2 class="text-2xl font-bold mb-6 text-center">How the Token Bucket Algorithm Works</h2>
+            <div class="card">
+                <h2 class="text-2xl font-bold mb-6 text-center gradient-text">How the Token Bucket Algorithm Works</h2>
                 <div class="space-y-6">
                     <!-- Step 1 -->
-                    <div class="flex items-start gap-4 p-4 bg-muted rounded-lg shadow-sm border border-border">
-                        <div
-                            class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-lg">
-                            1</div>
-                        <div>
-                            <h3 class="font-semibold text-lg mb-1">Initial State & Capacity</h3>
-                            <p class="text-muted-foreground">The **token bucket** starts with a maximum capacity (e.g.,
-                                5 tokens). Think of it like a fixed-size container that can hold a certain number of
-                                tokens. Initially, it's often full.</p>
+                    <div class="step-card">
+                        <div class="flex items-start">
+                            <div class="step-number">1</div>
+                            <div>
+                                <h3 class="font-semibold text-lg mb-1">Initial State & Capacity</h3>
+                                <p>The **token bucket** starts with a maximum capacity (e.g.,
+                                    5 tokens). Think of it like a fixed-size container that can hold a certain number of
+                                    tokens. Initially, it's often full.</p>
+                            </div>
                         </div>
                     </div>
                     <!-- Step 2 -->
-                    <div class="flex items-start gap-4 p-4 bg-muted rounded-lg shadow-sm border border-border">
-                        <div
-                            class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-lg">
-                            2</div>
-                        <div>
-                            <h3 class="font-semibold text-lg mb-1">Token Refill Rate</h3>
-                            <p class="text-muted-foreground">Tokens are **automatically added** to the bucket at a
-                                constant, predefined rate (e.g., 1 token every 2 seconds). This ensures a steady supply
-                                of "permission slips" for requests. The bucket will never exceed its maximum capacity.
-                            </p>
+                    <div class="step-card">
+                        <div class="flex items-start">
+                            <div class="step-number">2</div>
+                            <div>
+                                <h3 class="font-semibold text-lg mb-1">Token Refill Rate</h3>
+                                <p>Tokens are **automatically added** to the bucket at a
+                                    constant, predefined rate (e.g., 1 token every 2 seconds). This ensures a steady
+                                    supply
+                                    of "permission slips" for requests. The bucket will never exceed its maximum
+                                    capacity.
+                                </p>
+                            </div>
                         </div>
                     </div>
                     <!-- Step 3 -->
-                    <div class="flex items-start gap-4 p-4 bg-muted rounded-lg shadow-sm border border-border">
-                        <div
-                            class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-lg">
-                            3</div>
-                        <div>
-                            <h3 class="font-semibold text-lg mb-1">Request Arrival & Consumption</h3>
-                            <p class="text-muted-foreground">When an **API request arrives**, the system checks if there
-                                are enough tokens in the bucket. Typically, each request consumes one token. If tokens
-                                are available, one is consumed, and the request is processed.</p>
+                    <div class="step-card">
+                        <div class="flex items-start">
+                            <div class="step-number">3</div>
+                            <div>
+                                <h3 class="font-semibold text-lg mb-1">Request Arrival & Consumption</h3>
+                                <p>When an **API request arrives**, the system checks if there
+                                    are enough tokens in the bucket. Typically, each request consumes one token. If
+                                    tokens
+                                    are available, one is consumed, and the request is processed.</p>
+                            </div>
                         </div>
                     </div>
                     <!-- Step 4 -->
-                    <div class="flex items-start gap-4 p-4 bg-muted rounded-lg shadow-sm border border-border">
-                        <div
-                            class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-lg">
-                            4</div>
-                        <div>
-                            <h3 class="font-semibold text-lg mb-1">Handling Bursts (Burst Capacity)</h3>
-                            <p class="text-muted-foreground">The bucket's capacity allows for **bursts of requests**. If
-                                the bucket is full, multiple requests can be served instantly until the tokens are
-                                depleted. This is a key advantage, accommodating sudden spikes in traffic.</p>
+                    <div class="step-card">
+                        <div class="flex items-start">
+                            <div class="step-number">4</div>
+                            <div>
+                                <h3 class="font-semibold text-lg mb-1">Handling Bursts (Burst Capacity)</h3>
+                                <p>The bucket's capacity allows for **bursts of requests**. If
+                                    the bucket is full, multiple requests can be served instantly until the tokens are
+                                    depleted. This is a key advantage, accommodating sudden spikes in traffic.</p>
+                            </div>
                         </div>
                     </div>
                     <!-- Step 5 -->
-                    <div class="flex items-start gap-4 p-4 bg-muted rounded-lg shadow-sm border border-border">
-                        <div
-                            class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-lg">
-                            5</div>
-                        <div>
-                            <h3 class="font-semibold text-lg mb-1">Rate Limiting Excess Requests</h3>
-                            <p class="text-muted-foreground">If a request arrives and the **bucket is empty**, it means
-                                the rate limit has been exceeded. The request is then **denied** (e.g., with a "429 Too
-                                Many Requests" error) until more tokens become available through the refill process.</p>
+                    <div class="step-card">
+                        <div class="flex items-start">
+                            <div class="step-number">5</div>
+                            <div>
+                                <h3 class="font-semibold text-lg mb-1">Rate Limiting Excess Requests</h3>
+                                <p>If a request arrives and the **bucket is empty**, it means
+                                    the rate limit has been exceeded. The request is then **denied** (e.g., with a "429
+                                    Too
+                                    Many Requests" error) until more tokens become available through the refill process.
+                                </p>
+                            </div>
                         </div>
                     </div>
                     <!-- Step 6 -->
-                    <div class="flex items-start gap-4 p-4 bg-muted rounded-lg shadow-sm border border-border">
-                        <div
-                            class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-lg">
-                            6</div>
-                        <div>
-                            <h3 class="font-semibold text-lg mb-1">Continuous Operation</h3>
-                            <p class="text-muted-foreground">The refill and consumption process is **continuous**.
-                                Tokens are constantly refilling, and requests are constantly consuming them, ensuring
-                                that the API operates within its defined limits while allowing for some flexibility.</p>
+                    <div class="step-card">
+                        <div class="flex items-start">
+                            <div class="step-number">6</div>
+                            <div>
+                                <h3 class="font-semibold text-lg mb-1">Continuous Operation</h3>
+                                <p>The refill and consumption process is **continuous**.
+                                    Tokens are constantly refilling, and requests are constantly consuming them,
+                                    ensuring
+                                    that the API operates within its defined limits while allowing for some flexibility.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -356,7 +516,7 @@
         // Helper function to create a single token DOM element
         function createTokenElement(index) {
             const token = document.createElement('div');
-            token.className = 'absolute w-full h-[50px] flex items-center justify-center text-primary-foreground text-sm font-bold opacity-0 animate-token-drop z-10';
+            token.className = 'absolute w-full h-[50px] flex items-center justify-center text-white text-sm font-bold opacity-0 animate-token-drop z-10';
             token.textContent = 'TOKEN';
             token.style.bottom = `${index * 50}px`; // Stacks based on pixel height
             token.classList.add('tokens-fill-light', 'dark:tokens-fill-dark');
@@ -374,21 +534,19 @@
             if (currentRate === 0) {
                 timerDisplay.textContent = 'Auto-refill disabled';
                 autoStatusDisplay.textContent = 'Auto-refill: OFF';
-                autoStatusDisplay.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-gray-500 text-white'; // Gray for off
+                autoStatusDisplay.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-gray-500 text-white';
             } else if (tokens >= maxTokens) {
                 timerDisplay.textContent = 'Bucket full - paused';
-                // Clear the timer interval when the bucket is full to prevent further countdown/additions
                 if (timerInterval) clearInterval(timerInterval);
-                timerInterval = null; // Ensure it's nullified
+                timerInterval = null;
                 autoStatusDisplay.textContent = 'Auto-refill: ON (Paused)';
-                autoStatusDisplay.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-blue-500 text-white'; // Blue for paused
+                autoStatusDisplay.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-blue-500 text-white';
             } else {
-                // If not disabled and not full, ensure timer is running
                 if (!timerInterval) {
-                    startRefillIntervals(); // Restart if it was paused
+                    startRefillIntervals();
                 }
                 autoStatusDisplay.textContent = 'Auto-refill: ON';
-                autoStatusDisplay.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-green-500 text-white'; // Green for on
+                autoStatusDisplay.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-green-500 text-white';
             }
         }
 
@@ -400,10 +558,10 @@
                     tokenContainer.lastChild.remove();
                 }
                 statusDisplay.textContent = `✅ Request ALLOWED - Token consumed (${tokens} remaining)`;
-                statusDisplay.className = 'w-full mt-6 p-4 rounded-lg text-center font-medium bg-green-100 text-green-700 border border-green-200';
+                statusDisplay.className = 'status-message status-success w-full mt-6';
             } else {
                 statusDisplay.textContent = '❌ Request DENIED - No tokens available (rate limited!)';
-                statusDisplay.className = 'w-full mt-6 p-4 rounded-lg text-center font-medium bg-red-100 text-red-700 border border-red-200';
+                statusDisplay.className = 'status-message status-error w-full mt-6';
             }
             updateDisplay();
             // If refill was paused because bucket was full, restart it if tokens are consumed
@@ -420,10 +578,10 @@
                 tokens++; // Increment tokens after adding the visual element
 
                 statusDisplay.textContent = `🔄 Token added - Bucket refilled (${tokens}/${maxTokens})`;
-                statusDisplay.className = 'w-full mt-6 p-4 rounded-lg text-center font-medium bg-blue-100 text-blue-700 border border-blue-200';
+                statusDisplay.className = 'status-message status-info w-full mt-6';
             } else {
                 statusDisplay.textContent = '⚠️ Bucket full - Cannot add more tokens';
-                statusDisplay.className = 'w-full mt-6 p-4 rounded-lg text-center font-medium bg-yellow-100 text-yellow-700 border border-yellow-200';
+                statusDisplay.className = 'status-message status-info w-full mt-6';
             }
             updateDisplay();
         }
@@ -438,8 +596,6 @@
                 }
                 timerDisplay.textContent = `Next token in: ${Math.max(0, timeLeft).toFixed(1)}s`;
             } else {
-                // These cases are handled by updateDisplay's conditional logic,
-                // but the timer text still needs to be set if the interval is running.
                 if (currentRate === 0) {
                     timerDisplay.textContent = 'Auto-refill disabled';
                 } else if (tokens >= maxTokens) {
@@ -457,29 +613,26 @@
                 timeLeft = currentRate / 1000; // Initialize timeLeft with the current rate
                 timerInterval = setInterval(updateTimer, 100); // Update every 100ms for smooth countdown
             }
-            updateDisplay(); // Important to call to update the autoStatusDisplay
+            updateDisplay();
         }
 
         function updateRefillRate() {
             currentRate = parseInt(refillRateSelect.value);
-            startRefillIntervals(); // Restart intervals with the new rate or disable if 0
-            // The previous updateDisplay was here, but it's now called within startRefillIntervals for consistency.
+            startRefillIntervals();
         }
 
         function toggleDarkMode() {
             document.documentElement.classList.toggle('dark');
-            // Store preference in local storage
+            // Store preference in localStorage
             if (document.documentElement.classList.contains('dark')) {
                 localStorage.setItem('theme', 'dark');
             } else {
                 localStorage.setItem('theme', 'light');
             }
-            // Tokens' fill color relies on CSS classes, so no need to re-render them explicitly.
-            // However, updateDisplay is called to ensure status/timer text is consistent.
             updateDisplay();
         }
 
-        // Initialize theme from local storage or default to light
+        // Initialize theme from localStorage or default to light
         function initializeTheme() {
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -503,8 +656,8 @@
             // Set initial bucket height
             tokenContainer.style.height = `${tokens * 50}px`;
 
-            updateDisplay(); // Initial display update
-            updateRefillRate(); // This will correctly start or disable the auto-refill based on the default selected rate
+            updateDisplay();
+            updateRefillRate();
         });
     </script>
 </body>
